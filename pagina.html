@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt_br">
+   <head>
+      <meta charset="UTF-8">
+      <title>Deploy aplicação Falsk</title>
+   </head>
+   <body>
+      <h1>Preparar sistema</h1>
+      <p><strong>1. Identificar fuso hor&aacute;rio do Sistema</strong></p>
+      <pre>timedatectl</pre>
+      <p><strong>2. Selecionar fuso hor&aacute;rio<br/></strong></p>
+      <pre>sudo dpkg-reconfigure tzdata</pre>
+      <pre>sudo /etc/init.d/cron restart</pre>
+      <p><strong>3. Atualizar sistema</strong></p>
+      <pre>sudo apt-get update</pre>
+      <pre>sudo apt-get upgrade</pre>
+      <p><strong>4. Adicionar mem&oacute;ria Swap</strong></p>
+      <pre>sudo dd if=/dev/zero of=/swapfile bs=1024 count=1048576</pre>
+      <pre>sudo mkswap /swapfile</pre>
+      <pre>sudo chmod 0600 /swapfile</pre>
+      <pre>sudo swapon /swapfile</pre>
+      <pre>sudo nano /etc/fstab</pre>
+      <p>Adicionar linhas:</p>
+      <pre>/swapfile	none	swap	sw	0	0
+/swapfile swap swap defaults 0 0</pre>
+      <p>[Ctrl + x] para sair</p>
+      <p>Reinicie o sistema:</p>
+      <pre>sudo reboot</pre>
+      <p>Verifique se a mem&oacute;ria Swap foi implanta</p>
+      <pre>htop</pre>
+      <p><strong>5. Instalar pacotes</strong></p>
+      <pre>sudo apt install python3-pip</pre>
+      <pre>pip3 install flask</pre>
+      <pre>sudo apt install nginx</pre>
+      <pre>sudo apt-get install gunicorn3</pre>
+      <pre>sudo apt-get install virtualenv</pre>
+      <pre>sudo apt-get install python3-venv</pre>
+      <pre>sudo apt-get install python3-dev</pre>
+      <pre>sudo apt-get install git-core</pre>
+      <h1></h1>
+      <h1>Instalar Certificado SSL</h1>
+      <pre>sudo add-apt-repository ppa:certbot/certbot</pre>
+      <pre>sudo apt-get install python-certbot-nginx</pre>
+      <pre>sudo apt-get install letsencryp</pre>
+      <pre>sudo ufw delete allow 'Nginx HTTP'</pre>
+      <pre>sudo ufw allow ssh </pre>
+      <pre>sudo ufw enable </pre>
+      <pre>sudo ufw allow 'Nginx Full' </pre>
+      <pre>sudo ufw delete allow 'Nginx HTTP' </pre>
+      <pre>sudo ufw status</pre>
+      <p></p>
+      <h1>Preparar ambiente</h1>
+      <pre>git clone https://github.com/Aguape21/deployflask.git</pre>
+      <pre>python3 -m venv venv</pre>
+      <pre>source venv/bin/activate</pre>
+      <pre>pip install -r requirements.txt</pre>
+      <pre>deactivate<br/><br/></pre>
+      <h1>Configurar Servi&ccedil;o</h1>
+      <p>O arquivo "deployflask.service" deve estar configurado no seu projeto</p>
+      <pre>sudo cp -i deployflask.service /etc/systemd/system/deployflask.service</pre>
+      <pre>sudo systemctl daemon-reload</pre>
+      <p>Inicia e ativa o servi&ccedil;o</p>
+      <pre>sudo systemctl start deployflask</pre>
+      <pre>sudo systemctl enable deployflask</pre>
+      <p>Verificar se a configura&ccedil;&atilde;o est&aacute; correta</p>
+      <pre>sudo systemctl status deployflask</pre>
+      <p>Caso precise fazer manuten&ccedil;&atilde;o no c&oacute;difo ou parar o servi&ccedil;o</p>
+      <pre>sudo systemctl stop deployflask</pre>
+      <p></p>
+      <h1>Configurar nginx</h1>
+      <p>O arquivo "deployflask.service" deve estar configurado no seu projeto</p>
+      <pre>sudo cp -i deployflaskapp /etc/nginx/sites-enabled/deployflaskapp</pre>
+      <pre>sudo service nginx restart</pre>
+      <pre>sudo certbot --nginx -d deployflask.e-li.me</pre>
+      <pre>sudo reboot</pre>
+      <p></p>
+      <h1>Atualizar aplica&ccedil;&atilde;o</h1>
+      <pre>cd deployflask</pre>
+      <pre>sudo systemctl stop deployflask</pre>
+      <pre>git pull</pre>
+      <pre>sudo systemctl start deployflask</pre>
+      <pre>sudo systemctl enable deployflask</pre>
+      <pre>sudo systemctl status deployflask</pre>
+      <p></p>
+      <h1>Atualizar aplica&ccedil;&atilde;o (1 comando)</h1>
+      <pre>cd deployflask && sudo systemctl stop deployflask && sleep 1 && git pull && sudo systemctl start deployflask && sudo systemctl enable deployflask && sleep 5 && sudo systemctl status deployflask</pre>
+   </body>
+</html>

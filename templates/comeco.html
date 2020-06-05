@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt_br">
+   <head>
+      <meta charset="UTF-8">
+      <title>Deploy aplicação Falsk</title>
+   </head>
+   <body>
+
+            <form action="/tutorial" method="post">
+            <fieldset>
+            <!-- Form Name -->
+            <legend>Dados para entrar no tutorial</legend>
+            <!-- Text input-->
+            <div>
+              <label>Usuário ubuntu</label>
+              <div>
+              <input id="usuario" name="usuario" type="text" placeholder="" value="{{usuario}}">
+
+              </div>
+            </div>
+            <!-- Text input-->
+            <div>
+              <label>Projeto</label>
+              <div>
+              <input id="projeto" name="projeto" type="text" placeholder="" value="{{projeto}}">
+
+              </div>
+            </div>
+            <!-- Text input-->
+            <div>
+              <label>Repositório GIT</label>
+              <div>
+              <input id="git" name="git" type="text" placeholder="" value="{{git}}">
+
+              </div>
+            </div>
+            <!-- Textarea -->
+            <div>
+              <label>Endereços da aplicação</label>
+              <div>
+                <textarea id="enderecos" name="enderecos" >{{enderecos}}</textarea>
+              </div>
+            </div>
+            <!-- Button -->
+            <div>
+              <label></label>
+              <div>
+                <button id="Enviar" name="Enviar">Ver tutorial</button>
+              </div>
+            </div>
+            </fieldset>
+            </form>
+
+
+   </body>
+</html>

@@ -17,7 +17,7 @@
 
 location / {
   include proxy_params;
-  proxy_pass http://unix:/home/ubuntu/financeiro/app.sock;
+  proxy_pass http://unix:/home/{{usuario}}/{{projeto}}/app.sock;
     }
 }</pre></fieldset>
 

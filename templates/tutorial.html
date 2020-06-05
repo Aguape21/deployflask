@@ -8,6 +8,40 @@
 
    <iframe width="560" height="315" src="https://www.youtube.com/embed/XXXX" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
+     <h1>Arquivos necessários no projeto</h1>
+
+   <fieldset><legend>{{projeto}}app</legend><pre>server {
+    listen 443 ssl;
+    listen 80;
+    server_name{% for endereco in enderecos%} {{endereco}}{% endfor %};
+
+location / {
+  include proxy_params;
+  proxy_pass http://unix:/home/ubuntu/financeiro/app.sock;
+    }
+}</pre></fieldset>
+
+
+
+     <fieldset><legend>{{projeto}}.service</legend><pre>[Unit]
+Description=uWSGI instance to serve {{projeto}}
+After=network.target
+
+[Service]
+User={{usuario}}
+Group=www-data
+WorkingDirectory=/home/{{usuario}}/{{projeto}}
+Environment="PATH=/home/{{usuario}}/{{projeto}}/venv/bin"
+ExecStart=/home/{{usuario}}/{{projeto}}/venv/bin/gunicorn --workers 3 --bind unix:app.sock -m 007 app:app
+
+[Install]
+WantedBy=multi-user.target</pre></fieldset>
+
+<fieldset><legend>app.py</legend><pre>from __init__ import app</pre></fieldset>
+   <p><strong>requirements.txt</strong></p>
+   <pre>pip freeze > requirements.txt</pre>
+
+
       <h1>Preparar sistema</h1>
       <p><strong>1. Identificar fuso hor&aacute;rio do Sistema</strong></p>
       <pre>timedatectl</pre>
@@ -61,19 +95,7 @@
       <h1>Configurar Servi&ccedil;o</h1>
       <p>O arquivo "{{projeto}}.service" deve estar configurado no seu projeto</p>
 
-      <fieldset><legend>{{projeto}}.service</legend><pre>[Unit]
-Description=uWSGI instance to serve {{projeto}}
-After=network.target
 
-[Service]
-User={{usuario}}
-Group=www-data
-WorkingDirectory=/home/{{usuario}}/{{projeto}}
-Environment="PATH=/home/{{usuario}}/{{projeto}}/venv/bin"
-ExecStart=/home/{{usuario}}/{{projeto}}/venv/bin/gunicorn --workers 3 --bind unix:app.sock -m 007 app:app
-
-[Install]
-WantedBy=multi-user.target</pre></fieldset>
 
       <pre>sudo cp -i {{projeto}}.service /etc/systemd/system/{{projeto}}.service</pre>
       <pre>sudo systemctl daemon-reload</pre>
@@ -87,16 +109,7 @@ WantedBy=multi-user.target</pre></fieldset>
       <p></p>
       <h1>Configurar nginx</h1>
       <p>O arquivo "{{projeto}}app" deve estar configurado no seu projeto</p>
-      <fieldset><legend>{{projeto}}app</legend><pre>server {
-    listen 443 ssl;
-    listen 80;
-    server_name{% for endereco in enderecos%} {{endereco}}{% endfor %};
 
-location / {
-  include proxy_params;
-  proxy_pass http://unix:/home/ubuntu/financeiro/app.sock;
-    }
-}</pre></fieldset>
       <pre>sudo cp -i {{projeto}}app /etc/nginx/sites-enabled/{{projeto}}app</pre>
       <pre>sudo service nginx restart</pre>
       <pre>sudo certbot --nginx {% for endereco in enderecos%} -d {{endereco}}{% endfor %}</pre>

@@ -5,6 +5,9 @@
       <title>Deploy aplicação Falsk</title>
    </head>
    <body>
+
+   <iframe width="560" height="315" src="https://www.youtube.com/embed/XXXX" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
       <h1>Preparar sistema</h1>
       <p><strong>1. Identificar fuso hor&aacute;rio do Sistema</strong></p>
       <pre>timedatectl</pre>
@@ -50,39 +53,64 @@
       <pre>sudo ufw status</pre>
       <p></p>
       <h1>Preparar ambiente</h1>
-      <pre>git clone https://github.com/Aguape21/deployflask.git</pre>
+      <pre>git clone {{git}} {{projeto}}</pre>
       <pre>python3 -m venv venv</pre>
       <pre>source venv/bin/activate</pre>
       <pre>pip install -r requirements.txt</pre>
       <pre>deactivate<br/><br/></pre>
       <h1>Configurar Servi&ccedil;o</h1>
-      <p>O arquivo "deployflask.service" deve estar configurado no seu projeto</p>
-      <pre>sudo cp -i deployflask.service /etc/systemd/system/deployflask.service</pre>
+      <p>O arquivo "{{projeto}}.service" deve estar configurado no seu projeto</p>
+
+      <fieldset><legend>{{projeto}}.service</legend><pre>[Unit]
+Description=uWSGI instance to serve {{projeto}}
+After=network.target
+
+[Service]
+User={{usuario}}
+Group=www-data
+WorkingDirectory=/home/{{usuario}}/{{projeto}}
+Environment="PATH=/home/{{usuario}}/{{projeto}}/venv/bin"
+ExecStart=/home/{{usuario}}/{{projeto}}/venv/bin/gunicorn --workers 3 --bind unix:app.sock -m 007 app:app
+
+[Install]
+WantedBy=multi-user.target</pre></fieldset>
+
+      <pre>sudo cp -i {{projeto}}.service /etc/systemd/system/{{projeto}}.service</pre>
       <pre>sudo systemctl daemon-reload</pre>
       <p>Inicia e ativa o servi&ccedil;o</p>
-      <pre>sudo systemctl start deployflask</pre>
-      <pre>sudo systemctl enable deployflask</pre>
+      <pre>sudo systemctl start {{projeto}}</pre>
+      <pre>sudo systemctl enable {{projeto}}</pre>
       <p>Verificar se a configura&ccedil;&atilde;o est&aacute; correta</p>
-      <pre>sudo systemctl status deployflask</pre>
+      <pre>sudo systemctl status {{projeto}}</pre>
       <p>Caso precise fazer manuten&ccedil;&atilde;o no c&oacute;difo ou parar o servi&ccedil;o</p>
-      <pre>sudo systemctl stop deployflask</pre>
+      <pre>sudo systemctl stop {{projeto}}</pre>
       <p></p>
       <h1>Configurar nginx</h1>
-      <p>O arquivo "deployflask.service" deve estar configurado no seu projeto</p>
-      <pre>sudo cp -i deployflaskapp /etc/nginx/sites-enabled/deployflaskapp</pre>
+      <p>O arquivo "{{projeto}}app" deve estar configurado no seu projeto</p>
+      <fieldset><legend>{{projeto}}app</legend><pre>server {
+    listen 443 ssl;
+    listen 80;
+    server_name{% for endereco in enderecos%} {{endereco}}{% endfor %};
+
+location / {
+  include proxy_params;
+  proxy_pass http://unix:/home/ubuntu/financeiro/app.sock;
+    }
+}</pre></fieldset>
+      <pre>sudo cp -i {{projeto}}app /etc/nginx/sites-enabled/{{projeto}}app</pre>
       <pre>sudo service nginx restart</pre>
-      <pre>sudo certbot --nginx -d deployflask.e-li.me</pre>
+      <pre>sudo certbot --nginx {% for endereco in enderecos%} -d {{endereco}}{% endfor %}</pre>
       <pre>sudo reboot</pre>
       <p></p>
       <h1>Atualizar aplica&ccedil;&atilde;o</h1>
-      <pre>cd deployflask</pre>
-      <pre>sudo systemctl stop deployflask</pre>
+      <pre>cd {{projeto}}</pre>
+      <pre>sudo systemctl stop {{projeto}}</pre>
       <pre>git pull</pre>
-      <pre>sudo systemctl start deployflask</pre>
-      <pre>sudo systemctl enable deployflask</pre>
-      <pre>sudo systemctl status deployflask</pre>
+      <pre>sudo systemctl start {{projeto}}</pre>
+      <pre>sudo systemctl enable {{projeto}}</pre>
+      <pre>sudo systemctl status {{projeto}}</pre>
       <p></p>
       <h1>Atualizar aplica&ccedil;&atilde;o (1 comando)</h1>
-      <pre>cd deployflask && sudo systemctl stop deployflask && sleep 1 && git pull && sudo systemctl start deployflask && sudo systemctl enable deployflask && sleep 5 && sudo systemctl status deployflask</pre>
+      <pre>cd {{projeto}} && sudo systemctl stop {{projeto}} && sleep 1 && git pull && sudo systemctl start {{projeto}} && sudo systemctl enable {{projeto}} && sleep 5 && sudo systemctl status {{projeto}}</pre>
    </body>
 </html>

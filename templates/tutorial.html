@@ -42,12 +42,14 @@ WantedBy=multi-user.target</pre></fieldset>
    <pre>pip install gunicorn</pre>
    <pre>pip freeze > requirements.txt</pre>
    <p><strong>Atualizar projeto</strong></p>
+   <pre>git add *</pre>
+   <pre>git commit -m "Atualizar projeto"</pre>
    <pre>git push</pre>
 
       <h1>Preparar sistema</h1>
       <p><strong>1. Identificar fuso hor&aacute;rio do Sistema</strong></p>
       <pre>timedatectl</pre>
-      <p><strong>2. Selecionar fuso hor&aacute;rio<br/></strong></p>
+      <p><strong>2. Selecionar fuso hor&aacute;rio<br/></strong></p> 
       <pre>sudo dpkg-reconfigure tzdata</pre>
       <pre>sudo /etc/init.d/cron restart</pre>
       <p><strong>3. Atualizar sistema</strong></p>

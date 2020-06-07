@@ -39,8 +39,10 @@ WantedBy=multi-user.target</pre></fieldset>
 
 <fieldset><legend>app.py</legend><pre>from __init__ import app</pre></fieldset>
    <p><strong>requirements.txt</strong></p>
+   <pre>pip install gunicorn</pre>
    <pre>pip freeze > requirements.txt</pre>
-
+   <p><strong>Atualizar projeto</strong></p>
+   <pre>git push</pre>
 
       <h1>Preparar sistema</h1>
       <p><strong>1. Identificar fuso hor&aacute;rio do Sistema</strong></p>
@@ -88,6 +90,7 @@ WantedBy=multi-user.target</pre></fieldset>
       <p></p>
       <h1>Preparar ambiente</h1>
       <pre>git clone {{git}} {{projeto}}</pre>
+      <pre>cd {{projeto}}</pre>
       <pre>python3 -m venv venv</pre>
       <pre>source venv/bin/activate</pre>
       <pre>pip install -r requirements.txt</pre>

@@ -17,3 +17,12 @@ Essa é uma aplicação teste e um tutorial para realização de um deploy de um
 `pip install -r requirements.txt`
 
 `python3 __init__.py`
+
+
+---
+
+Se gostou desse tutorial, queira contribuir ou sugerir melhorias segue meus contatos abaixo:
+
+Luiz Silva
+(48) 999.482.983 (Celular/WhatsApp)
+luiz (a) e-licencie.com.br
